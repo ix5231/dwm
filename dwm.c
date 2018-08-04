@@ -1679,7 +1679,7 @@ tile(Monitor *m)
 		return;
 
 	if (n > m->nmaster)
-		mw = m->nmaster ? (m->ww - padding * 2) * m->mfact : 0;
+		mw = m->nmaster ? (m->ww - padding * 2) * m->mfact : padding;
 	else
 		mw = m->ww - padding;
 	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
