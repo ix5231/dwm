@@ -162,6 +162,7 @@ static void detach(Client *c);
 static void detachstack(Client *c);
 static Monitor *dirtomon(int dir);
 static void drawbar(Monitor *m);
+static void showtagstat(Monitor *m);
 static void drawbars(void);
 static void expose(XEvent *e);
 static void focus(Client *c);
@@ -742,12 +743,42 @@ drawbar(Monitor *m)
 }
 
 void
+showtagstat(Monitor *m)
+{
+	int i;
+	unsigned int occ = 0, urg = 0;
+	Client *c;
+
+	for (c = m->clients; c; c = c->next) {
+		occ |= c->tags;
+		if (c->isurgent)
+			urg |= c->tags;
+	}
+
+	printf("[%d] ", m->num);
+	for (i = 0; i < LENGTH(tags); i++) {
+		if (m->tagset[m->seltags] & 1 << i)
+			printf(":");
+		else if (urg & 1 << i)
+			printf("!");
+		else if (occ & 1 << i)
+			printf(";");
+		else
+			printf(".");
+		printf("%s ", tags[i]);
+	}
+	puts("");
+}
+
+void
 drawbars(void)
 {
 	Monitor *m;
 
-	for (m = mons; m; m = m->next)
+	for (m = mons; m; m = m->next) {
 		drawbar(m);
+		showtagstat(m);
+    }
 }
 
 void
